@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCloudZoneTags_Copy" result-type="Array/VRA:Tag" api-version="6.0.0" id="2b7e9524-edc5-46da-94ca-a0fabb7b18bc" version="2.0.0" category-name="com.vmware.library.vra.infrastructure.util">
+  <description><![CDATA[Get All Tags associated with a Cloud Zone.]]></description>
+  <param n="zone" t="VRA:Zone"><![CDATA[VMware Aria Automation Zone]]></param>
+  <script encoded="false"><![CDATA[if(!zone){
+    return new Array();
+}
+
+return zone.tags;]]></script>
+</dunes-script-module>

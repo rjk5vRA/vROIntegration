@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item5" object-name="Workflow:name=generic" id="e727ffe8-682b-48b3-b8e3-0013592fe14b" editor-version="2.0" version="1.0.12" api-version="6.0.0" allowed-operations="vef" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Copy of Clone a REST host</display-name>
+    <description>Creates a clone of a REST host.fdfdf</description>
+    <ref-types>&gt;(REST:RESTHost)</ref-types>
+    <position y="20.0" x="160.0"/>
+    <input>
+        <param name="host" type="REST:RESTHost">
+            <description>REST host to clone</description>
+        </param>
+        <param name="name" type="string">
+            <description>New host's name</description>
+        </param>
+        <param name="url" type="string">
+            <description>New host's base URL</description>
+        </param>
+        <param name="authentication" type="string">
+            <description>New host's authentication type</description>
+        </param>
+        <param name="authUserName" type="string">
+            <description>Authentication user name</description>
+        </param>
+        <param name="authPassword" type="SecureString">
+            <description>Authentication password</description>
+        </param>
+        <param name="consumerKey" type="string">
+            <description>Consumer key</description>
+        </param>
+        <param name="consumerSecret" type="SecureString">
+            <description>Consumer secret</description>
+        </param>
+        <param name="accessToken" type="string">
+            <description>Access token</description>
+        </param>
+        <param name="accessTokenSecret" type="SecureString">
+            <description>Access token secret</description>
+        </param>
+        <param name="connectionTimeout" type="number">
+            <description>Connection timeout</description>
+        </param>
+        <param name="operationTimeout" type="number">
+            <description>Operation timeout</description>
+        </param>
+        <param name="sessionMode" type="string">
+            <description>Session mode</description>
+        </param>
+        <param name="oauth2Token" type="string">
+            <description>OAuth 2.0 token</description>
+        </param>
+        <param name="tokenSendingStrategy" type="string">
+            <description>OAuth 2.0 token sending strategy</description>
+        </param>
+        <param name="workstation" type="string">
+            <description>Workstation for NTLM authentication</description>
+        </param>
+        <param name="domain" type="string">
+            <description>Domain for NTLM authentication</description>
+        </param>
+        <param name="useProxy" type="boolean">
+            <description>User proxy</description>
+        </param>
+        <param name="proxyHost" type="string">
+            <description>Proxy host</description>
+        </param>
+        <param name="proxyPort" type="number">
+            <description>Proxy port</description>
+        </param>
+    </input>
+    <output>
+        <param name="newHost" type="REST:RESTHost">
+            <description>Cloned rest hosts</description>
+        </param>
+    </output>
+    <attrib name="errorCode" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="ignoreWarnings" type="boolean">
+        <value encoded="n">false</value>
+        <description>If set to true, the certificate is accepted silently and the certificate is added to the trusted store</description>
+    </attrib>
+    <workflow-item name="item0" out-name="item1" catch-name="item2" throw-bind-name="errorCode" type="task" comparator="0">
+        <display-name>Clone host</display-name>
+        <script encoded="false">newHost = host.newHostFromThis();
+newHost.name = name;
+newHost.url = url;
+newHost.connectionTimeout = connectionTimeout;
+newHost.operationTimeout = operationTimeout;
+if (useProxy) {
+	newHost.proxyHost = proxyHost;
+	newHost.proxyPort = proxyPort;
+} else {
+	newHost.proxyHost = null;
+	newHost.proxyPort = -1;
+}
+if ( authentication == "OAuth 1.0" ) {
+	var authParams = [consumerKey, consumerSecret, accessToken, accessTokenSecret];
+} else if ( authentication == "OAuth 2.0" ) {
+	if (!tokenSendingStrategy) {
+		var authParams = [oauth2Token];
+	} else {
+		var authParams = [oauth2Token, tokenSendingStrategy];
+	}
+} else if ( authentication == "NTLM" ) {
+	var authParams = [sessionMode, authUserName, authPassword, workstation, domain];
+} else {
+	var authParams = [sessionMode, authUserName, authPassword];
+}
+var authenticationObject = RESTAuthenticationManager.createAuthentication(authentication, authParams);
+System.log("REST host authentication: " + authenticationObject);
+newHost.authentication = authenticationObject;
+System.log("Saving newHost: " + newHost);
+newHost = RESTHostManager.addHost(newHost);</script>
+        <in-binding>
+            <bind name="accessToken" type="string" export-name="accessToken"/>
+            <bind name="authentication" type="string" export-name="authentication"/>
+            <bind name="authPassword" type="SecureString" export-name="authPassword"/>
+            <bind name="authUserName" type="string" export-name="authUserName"/>
+            <bind name="connectionTimeout" type="number" export-name="connectionTimeout"/>
+            <bind name="consumerKey" type="string" export-name="consumerKey"/>
+            <bind name="consumerSecret" type="SecureString" export-name="consumerSecret"/>
+            <bind name="host" type="REST:RESTHost" export-name="host"/>
+            <bind name="name" type="string" export-name="name"/>
+            <bind name="operationTimeout" type="number" export-name="operationTimeout"/>
+            <bind name="url" type="string" export-name="url"/>
+            <bind name="sessionMode" type="string" export-name="sessionMode"/>
+            <bind name="oauth2Token" type="string" export-name="oauth2Token"/>
+            <bind name="accessTokenSecret" type="SecureString" export-name="accessTokenSecret"/>
+            <bind name="workstation" type="string" export-name="workstation"/>
+            <bind name="domain" type="string" export-name="domain"/>
+            <bind name="proxyHost" type="string" export-name="proxyHost"/>
+            <bind name="proxyPort" type="number" export-name="proxyPort"/>
+            <bind name="useProxy" type="boolean" export-name="useProxy"/>
+            <bind name="tokenSendingStrategy" type="string" export-name="tokenSendingStrategy"/>
+        </in-binding>
+        <out-binding>
+            <bind name="newHost" type="REST:RESTHost" export-name="newHost"/>
+            <bind name="errorCode" type="string" export-name="errorCode"/>
+        </out-binding>
+        <position y="209.95454545454544" x="265.0"/>
+    </workflow-item>
+    <workflow-item name="item1" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="263.59090909090907" x="305.0"/>
+    </workflow-item>
+    <workflow-item name="item2" throw-bind-name="errorCode" type="end" end-mode="1" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="199.95454545454544" x="445.0"/>
+    </workflow-item>
+    <workflow-item name="item5" out-name="item4" alt-out-name="item0" type="custom-condition" comparator="0">
+        <display-name>Custom decision</display-name>
+        <script encoded="false">return (/^https:/).test(url);</script>
+        <in-binding>
+            <bind name="url" type="string" export-name="url"/>
+        </in-binding>
+        <out-binding/>
+        <position y="63.59090909090908" x="125.0"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" catch-name="item8" throw-bind-name="errorCode" type="link" linked-workflow-id="b006447c-c041-4d51-8726-9f30b9709284" comparator="0">
+        <display-name>Import a certificate from URL using proxy server</display-name>
+        <in-binding>
+            <bind name="url" type="string" export-name="url">
+                <description>URL or just host:port for non-HTTPS SSL services:</description>
+            </bind>
+            <bind name="ignoreWarnings" type="boolean" export-name="ignoreWarnings">
+                <description>If set to true, the certificate is accepted silently and the certificate is added to the trusted store</description>
+            </bind>
+            <bind name="proxyHost" type="string" export-name="proxyHost">
+                <description>Proxy host</description>
+            </bind>
+            <bind name="proxyPort" type="number" export-name="proxyPort">
+                <description>Proxy port</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description>Imports an SSL certificate into the server trust store.</description>
+        <position y="82.68181818181817" x="264.5"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item3" alt-out-name="item7" type="condition" comparator="0">
+        <display-name>Decision</display-name>
+        <script encoded="false">//Generated by the system, cannot be edited
+return (useProxy == true) ;</script>
+        <in-binding>
+            <bind name="useProxy" type="boolean" export-name="useProxy"/>
+        </in-binding>
+        <out-binding/>
+        <condition name="useProxy" type="boolean" comparator="0" label="null">false</condition>
+        <position y="18.136363636363633" x="424.5"/>
+    </workflow-item>
+    <workflow-item name="item7" out-name="item0" catch-name="item6" throw-bind-name="errorCode" type="link" linked-workflow-id="c5a874a2-e8e7-480d-bdde-d1a80b8a3011" comparator="0">
+        <display-name>Import a certificate from URL</display-name>
+        <in-binding>
+            <bind name="url" type="string" export-name="url">
+                <description>URL or just host:port for non-HTTPS SSL services:</description>
+            </bind>
+            <bind name="ignoreWarnings" type="boolean" export-name="ignoreWarnings">
+                <description>If set to true, the certificate is accepted silently and the certificate is added to the trusted store</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description>Imports an SSL certificate into the server trust store.</description>
+        <position y="91.77272727272727" x="504.5"/>
+    </workflow-item>
+    <workflow-item name="item6" throw-bind-name="errorCode" type="end" end-mode="1" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="81.77272727272727" x="684.5"/>
+    </workflow-item>
+    <workflow-item name="item8" throw-bind-name="errorCode" type="end" end-mode="1" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="72.68181818181817" x="444.5"/>
+    </workflow-item>
+</ns2:workflow>
