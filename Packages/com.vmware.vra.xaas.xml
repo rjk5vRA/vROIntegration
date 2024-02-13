@@ -7,5 +7,5 @@
 <used-plugin name='REST' version='2.0.0' />
 <used-plugin name='SOAP' version='2.0.0' />
 <used-plugin name='VC' version='6.0.2' />
-<used-plugin name='vCloud' version='5.5.1.2' />
+<used-plugin name='vCloudccsds' version='5.5.1.2' />
 </package>
